@@ -1,38 +1,23 @@
-CXX = g++
-CC = gcc
-CXXFLAGS = -Wall -Wextra -I../src -I/usr/include/gtest
-CFLAGS = -Wall -Wextra -I../src
-LDFLAGS = -lgtest -lgtest_main -pthread
+CXX       = g++
+CC        = gcc
+CXXFLAGS  = -Wall -g -std=c++14 -I../src
+CFLAGS    = -Wall -g -std=c11   -I../src
+TEST_TARGET = randomized_queue_test
+TEST_OBJS = randomized_queue_test.o ../src/RandomizedQueue.o
 
-LIB_TARGET = libdeque.a
-TEST_TARGET = test_deque
-PROG_TARGET = program
+all: $(TEST_TARGET)
 
-.PHONY: all lib test prog clean
+$(TEST_TARGET): $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $(TEST_OBJS) -lgtest -lpthread
 
-all: lib test prog
+randomized_queue_test.o: randomized_queue_test.cpp ../src/RandomizedQueue.h
+	$(CXX) $(CXXFLAGS) -c randomized_queue_test.cpp
 
-lib: $(LIB_TARGET)
-
-$(LIB_TARGET): ../src/Deque.c ../src/Deque.h
-	$(CC) $(CFLAGS) -c ../src/Deque.c -o Deque.o
-	ar rcs $(LIB_TARGET) Deque.o
-
-test:
-	$(CXX) $(CXXFLAGS) deque_test.cpp -x c ../src/Deque.c -o $(TEST_TARGET) $(LDFLAGS)
-
-prog:
-	$(CC) $(CFLAGS) -DBUILD_MAIN ../src/Deque.c -o $(PROG_TARGET)
+../src/RandomizedQueue.o: ../src/RandomizedQueue.c ../src/RandomizedQueue.h
+	$(CC) $(CFLAGS) -c ../src/RandomizedQueue.c -o ../src/RandomizedQueue.o
 
 clean:
-	rm -f Deque.o $(LIB_TARGET) $(TEST_TARGET) $(PROG_TARGET)
-
-
-
-
-
-
-
+	rm -f $(TEST_TARGET) $(TEST_OBJS) ../src/RandomizedQueue.o
 
 
 
