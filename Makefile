@@ -1,38 +1,19 @@
-CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -I../src -I/usr/include/gtest
-CFLAGS = -Wall -Wextra -I../src
-LDFLAGS = -lgtest -lgtest_main -pthread
+CFLAGS = -Wall -Wextra -std=c99 -O2
+LDFLAGS =
+SRCS = stack.c two_stacks.c
+OBJS = $(SRCS:.c=.o)
+TARGET = two_stacks
 
-LIB_TARGET = libdeque.a
-TEST_TARGET = test_deque
-PROG_TARGET = program
+all: $(TARGET)
 
-.PHONY: all lib test prog clean
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-all: lib test prog
-
-lib: $(LIB_TARGET)
-
-$(LIB_TARGET): ../src/Deque.c ../src/Deque.h
-	$(CC) $(CFLAGS) -c ../src/Deque.c -o Deque.o
-	ar rcs $(LIB_TARGET) Deque.o
-
-test:
-	$(CXX) $(CXXFLAGS) deque_test.cpp -x c ../src/Deque.c -o $(TEST_TARGET) $(LDFLAGS)
-
-prog:
-	$(CC) $(CFLAGS) -DBUILD_MAIN ../src/Deque.c -o $(PROG_TARGET)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f Deque.o $(LIB_TARGET) $(TEST_TARGET) $(PROG_TARGET)
+	rm -f $(OBJS) $(TARGET)
 
-
-
-
-
-
-
-
-
-
+.PHONY: all clean
