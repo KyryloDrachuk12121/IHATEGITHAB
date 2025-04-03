@@ -1,38 +1,18 @@
-CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -I../src -I/usr/include/gtest
-CFLAGS = -Wall -Wextra -I../src
-LDFLAGS = -lgtest -lgtest_main -pthread
+CFLAGS = -Wall -Wextra -std=c11
 
-LIB_TARGET = libdeque.a
-TEST_TARGET = test_deque
-PROG_TARGET = program
+all: convex
 
-.PHONY: all lib test prog clean
+convex: main.o convex.o
+	$(CC) $(CFLAGS) -o convex main.o convex.o -lm
 
-all: lib test prog
+main.o: main.c convex.h
+	$(CC) $(CFLAGS) -c main.c -o main.o
 
-lib: $(LIB_TARGET)
-
-$(LIB_TARGET): ../src/Deque.c ../src/Deque.h
-	$(CC) $(CFLAGS) -c ../src/Deque.c -o Deque.o
-	ar rcs $(LIB_TARGET) Deque.o
-
-test:
-	$(CXX) $(CXXFLAGS) deque_test.cpp -x c ../src/Deque.c -o $(TEST_TARGET) $(LDFLAGS)
-
-prog:
-	$(CC) $(CFLAGS) -DBUILD_MAIN ../src/Deque.c -o $(PROG_TARGET)
+convex.o: convex.c convex.h
+	$(CC) $(CFLAGS) -c convex.c -o convex.o
 
 clean:
-	rm -f Deque.o $(LIB_TARGET) $(TEST_TARGET) $(PROG_TARGET)
-
-
-
-
-
-
-
-
+	rm -f convex main.o convex.o
 
 
