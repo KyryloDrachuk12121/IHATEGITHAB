@@ -1,38 +1,24 @@
-CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -I../src -I/usr/include/gtest
-CFLAGS = -Wall -Wextra -I../src
-LDFLAGS = -lgtest -lgtest_main -pthread
+CFLAGS = -Wall -Wextra -O2 -g
+TARGET = lecture_8
+INTERFACE = BST
+IMPL = BST
 
-LIB_TARGET = libdeque.a
-TEST_TARGET = test_deque
-PROG_TARGET = program
+OBJS = $(TARGET).o $(IMPL).o node.o  # Add node.o
 
-.PHONY: all lib test prog clean
+all: $(TARGET)
 
-all: lib test prog
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
-lib: $(LIB_TARGET)
+$(TARGET).o: $(TARGET).c $(INTERFACE).h node.h item.h
+	$(CC) $(CFLAGS) -c $(TARGET).c
 
-$(LIB_TARGET): ../src/Deque.c ../src/Deque.h
-	$(CC) $(CFLAGS) -c ../src/Deque.c -o Deque.o
-	ar rcs $(LIB_TARGET) Deque.o
+$(IMPL).o: $(IMPL).c $(INTERFACE).h item.h node.h
+	$(CC) $(CFLAGS) -c $(IMPL).c
 
-test:
-	$(CXX) $(CXXFLAGS) deque_test.cpp -x c ../src/Deque.c -o $(TEST_TARGET) $(LDFLAGS)
-
-prog:
-	$(CC) $(CFLAGS) -DBUILD_MAIN ../src/Deque.c -o $(PROG_TARGET)
+node.o: node.c node.h
+	$(CC) $(CFLAGS) -c node.c 
 
 clean:
-	rm -f Deque.o $(LIB_TARGET) $(TEST_TARGET) $(PROG_TARGET)
-
-
-
-
-
-
-
-
-
-
+	rm -f $(TARGET) $(OBJS) *.o
